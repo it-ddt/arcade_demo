@@ -1,9 +1,12 @@
 """Точка входа в программу."""
 
+from _collections_abc import Generator
+
 import arcade
 
 import config
-from views import GameView, MenuView
+import utils
+from views import GameView, LoadView, MenuView
 
 
 class App(arcade.Window):
@@ -20,18 +23,44 @@ class App(arcade.Window):
             update_rate=1 / config.FPS,
             draw_rate=1 / config.FPS,
         )
-        self.menu_view = MenuView()
-        self.game_view = GameView()
-        self.show_menu()
+
+        self.textures = {}
+        self.loader = self.load_textures()
+
+        # TODO: забрать классовый атрибут name от представлений
+        self.views = {
+            "load": LoadView(),
+        }
+        self.switch_view("load")
+
         arcade.run()
 
-    def show_menu(self) -> None:
-        """Включает представление меню."""
-        self.show_view(self.menu_view)
+    def switch_view(self, view_name: str) -> None:
+        """Включает представление."""
+        view = self.views.get(view_name)
+        if not view:
+            error_message = f"Представление {view_name} не найдено."
+            raise RuntimeError(error_message)
+        self.show_view(view)
 
-    def show_game(self) -> None:
-        """Включает представление игры."""
-        self.show_view(self.game_view)
+    def load_textures(self) -> Generator[int]:
+        """Загружает текстуры."""
+        percentage = 0
+        extentions = (".png", ".jpg", ".jpeg")
+        textures_names = utils.get_filenames(config.IMG_DIR, extentions)
+        load_step = round(100 / len(textures_names))
+        for name in textures_names:  # TODO: избавиться от расширений в ключах
+            self.textures[name] = arcade.load_texture(config.IMG_DIR / name)
+            percentage += load_step
+            yield percentage
+
+    def make_views(self) -> None:
+        """Создает остальные представления."""
+        views = {
+            "menu": MenuView(),
+            "game": GameView(),
+        }
+        self.views.update(views)
 
 
 if __name__ == "__main__":

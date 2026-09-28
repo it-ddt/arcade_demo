@@ -2,19 +2,17 @@
 
 import arcade
 
-import config
-
 
 class Player(arcade.Sprite):
     """Игрок."""
 
-    def __init__(self, x: int, y: int) -> None:
+    def __init__(self, x: int, y: int, texture: arcade.Texture) -> None:
         """Конструктор класса.
 
         Задает текстуру, координаты, скорость и направления движения.
         """
         super().__init__()
-        self.texture = arcade.load_texture(config.IMG_DIR / "player.png")
+        self.texture = texture
         self.center_x = x
         self.center_y = y
         self.speed = 200

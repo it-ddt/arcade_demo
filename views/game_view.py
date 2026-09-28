@@ -29,6 +29,9 @@ class GameView(arcade.View):
         """
         super().__init__()
 
+        # TODO: представление загрузки
+        self.sound_catch = arcade.load_sound(config.SOUND_DIR / "catch.mp3")  # TODO: система звука
+
         self.mice_spawn_interval = 1  # сек
         self.mice_spawn_timer = self.mice_spawn_interval
 
@@ -42,9 +45,9 @@ class GameView(arcade.View):
         bg_x = self.window.width // 2
         bg_y = self.window.height // 2
 
-        self.player = Player(player_x, player_y)
+        self.player = Player(player_x, player_y, self.window.textures["player.png"])
 
-        bg_texture = arcade.load_texture(config.IMG_DIR / "background.png")
+        bg_texture = self.window.textures["background.png"]
         bg = arcade.Sprite()
         bg.texture = bg_texture
         bg.center_x = bg_x
@@ -94,7 +97,7 @@ class GameView(arcade.View):
     def on_key_press(self, symbol: int, _: int) -> None:
         """Система ввода: нажатие клавиш."""
         if symbol == arcade.key.ESCAPE:
-            self.window.show_menu()
+            self.window.switch_view("menu")
 
         if symbol == arcade.key.D:
             self.player.d_x = 1
@@ -131,6 +134,7 @@ class GameView(arcade.View):
             self.mice,
         )
         for mouse in mice_caught:
+            self.sound_catch.play()
             mouse.remove_from_sprite_lists()
             self.mice_caught_counter += 1
             self.score.text = str(self.mice_caught_counter)
@@ -141,9 +145,8 @@ class GameView(arcade.View):
         Создает спрайт с текстурой в случайных координатах
         (отступ 10% от каждого края).
         """
-        mouse = arcade.Sprite()
-        mouse_texture = arcade.load_texture(config.IMG_DIR / "mouse.png")
-        mouse.texture = mouse_texture
+        texture = self.window.textures["mouse.png"]
+        mouse = arcade.Sprite(texture)
         mouse.center_x = random.randint(
             int(self.window.width * 0.1),
             int(self.window.width * 0.9),

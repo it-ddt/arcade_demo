@@ -39,6 +39,6 @@ class MenuView(arcade.View):
     def on_key_press(self, symbol: int, _: int) -> None:
         """Включает представление игры по ENTER."""
         if symbol == arcade.key.ENTER:
-            self.window.show_game()
+            self.window.switch_view("game")
         if symbol == arcade.key.ESCAPE:
             arcade.exit()

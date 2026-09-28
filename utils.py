@@ -1,5 +1,9 @@
 """Утилиты."""
 
+import pathlib
+
+import config
+
 
 def get_scale(
         width_required: float,
@@ -15,3 +19,13 @@ def get_scale(
     width_ratio = width_required / width_initial
     height_ratio = height_required / height_initial
     return max(width_ratio, height_ratio)
+
+
+def get_filenames(path: pathlib.Path, extentions: tuple[str]) -> list[str]:
+    """Возвращает имена и расширения файлов в папке."""
+    files = pathlib.Path.iterdir(path)
+    return [
+        file.name for file in files
+        if file.is_file()
+        and file.suffix.lower() in extentions
+    ]
