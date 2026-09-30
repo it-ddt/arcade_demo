@@ -27,5 +27,5 @@ def get_filenames(path: pathlib.Path, extentions: tuple[str]) -> list[str]:
     return [
         file.name for file in files
         if file.is_file()
-        and file.suffix.lower() in extentions
+        and file.suffix.lower()[1:] in extentions
     ]

@@ -45,9 +45,9 @@ class GameView(arcade.View):
         bg_x = self.window.width // 2
         bg_y = self.window.height // 2
 
-        self.player = Player(player_x, player_y, self.window.textures["player.png"])
+        self.player = Player(player_x, player_y, self.window.textures["player"])
 
-        bg_texture = self.window.textures["background.png"]
+        bg_texture = self.window.textures["background"]
         bg = arcade.Sprite()
         bg.texture = bg_texture
         bg.center_x = bg_x
@@ -145,7 +145,7 @@ class GameView(arcade.View):
         Создает спрайт с текстурой в случайных координатах
         (отступ 10% от каждого края).
         """
-        texture = self.window.textures["mouse.png"]
+        texture = self.window.textures["mouse"]
         mouse = arcade.Sprite(texture)
         mouse.center_x = random.randint(
             int(self.window.width * 0.1),

@@ -1,6 +1,6 @@
 """Точка входа в программу."""
 
-from _collections_abc import Generator
+from collections.abc import Generator
 
 import arcade
 
@@ -25,7 +25,9 @@ class App(arcade.Window):
         )
 
         self.textures = {}
-        self.loader = self.load_textures()
+        self.sounds = {}
+
+        self.loader = self.load_assets()
 
         # TODO: забрать классовый атрибут name от представлений
         self.views = {
@@ -43,14 +45,23 @@ class App(arcade.Window):
             raise RuntimeError(error_message)
         self.show_view(view)
 
-    def load_textures(self) -> Generator[int]:
-        """Загружает текстуры."""
+    def load_assets(self) -> Generator[int]:
+        """Загружает ассеты: текстуры и звуки."""
         percentage = 0
-        extentions = (".png", ".jpg", ".jpeg")
-        textures_names = utils.get_filenames(config.IMG_DIR, extentions)
-        load_step = round(100 / len(textures_names))
-        for name in textures_names:  # TODO: избавиться от расширений в ключах
-            self.textures[name] = arcade.load_texture(config.IMG_DIR / name)
+        img_extentions = ("png", "jpg", "jpeg")
+        sound_extentions = ("mp3", "wav", "ogg")
+
+        textures_names = utils.get_filenames(config.IMG_DIR, img_extentions)
+        sounds_names = utils.get_filenames(config.SOUND_DIR, sound_extentions)
+
+        load_step = round(100 / (len(textures_names) + len(sounds_names)))
+        file_names = textures_names + sounds_names
+        for file_name in file_names:
+            name, extention = file_name.split(".")[0], file_name.split(".")[-1]
+            if extention in img_extentions:
+                self.textures[name] = arcade.load_texture(config.IMG_DIR / file_name)
+            elif extention in sound_extentions:
+                self.sounds[name] = arcade.load_sound(config.SOUND_DIR / file_name)
             percentage += load_step
             yield percentage
 
