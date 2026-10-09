@@ -1,24 +1,16 @@
 """Модуль представлений."""
 
-from __future__ import annotations
-
 import random
-from typing import TYPE_CHECKING
 
 import arcade
 
-import config
-import utils
 from sprites import Player
 
-if TYPE_CHECKING:
-    from main import App
+from .base_view import BaseView
 
 
-class GameView(arcade.View):
+class GameView(BaseView):
     """Представление геймплея."""
-
-    window: App
 
     def __init__(self) -> None:
         """Конструктор класса.
@@ -27,41 +19,20 @@ class GameView(arcade.View):
         Создает спрайты: игрок и фон;
         Подгоняет фон к размеру окна (не оставляет пустых областей).
         """
-        super().__init__()
-
-        # TODO: представление загрузки
-        self.sound_catch = arcade.load_sound(config.SOUND_DIR / "catch.mp3")  # TODO: система звука
+        super().__init__("game_bg")
 
         self.mice_spawn_interval = 1  # сек
         self.mice_spawn_timer = self.mice_spawn_interval
 
         self.mice_caught_counter = 0
 
-        self.sprites_to_draw = arcade.SpriteList()
         self.mice = arcade.SpriteList()
 
         player_x = self.window.width // 2
         player_y = self.window.height // 2
-        bg_x = self.window.width // 2
-        bg_y = self.window.height // 2
 
         self.player = Player(player_x, player_y, self.window.textures["player"])
-
-        bg_texture = self.window.textures["background"]
-        bg = arcade.Sprite()
-        bg.texture = bg_texture
-        bg.center_x = bg_x
-        bg.center_y = bg_y
-
-        bg.scale = utils.get_scale(
-            self.window.width,
-            self.window.height,
-            bg.texture.width,
-            bg.texture.height,
-        )
-
-        self.sprites_to_draw.append(bg)
-        self.sprites_to_draw.append(self.player)
+        self.sprites.append(self.player)
 
         self.score = arcade.Text(
             str(self.mice_caught_counter),
@@ -71,28 +42,7 @@ class GameView(arcade.View):
             anchor_x="center",
             anchor_y="center",
         )
-
-    def on_draw(self) -> None:
-        """Очищает окно и рисует все спрайты."""
-        self.clear()
-        self.sprites_to_draw.draw()
-        self.score.draw()
-        arcade.draw_line(
-            self.window.width // 2,
-            self.window.height,
-            self.window.width // 2,
-            0,
-            arcade.color.RED,
-            line_width=5,
-        )
-        arcade.draw_line(
-            0,
-            self.window.height // 2,
-            self.window.width,
-            self.window.height // 2,
-            arcade.color.RED,
-            line_width=5,
-        )
+        self.text_objects.append(self.score)
 
     def on_key_press(self, symbol: int, _: int) -> None:
         """Система ввода: нажатие клавиш."""
@@ -134,7 +84,7 @@ class GameView(arcade.View):
             self.mice,
         )
         for mouse in mice_caught:
-            self.sound_catch.play()
+            self.window.sound_manager.play_sound("catch")
             mouse.remove_from_sprite_lists()
             self.mice_caught_counter += 1
             self.score.text = str(self.mice_caught_counter)
@@ -156,5 +106,5 @@ class GameView(arcade.View):
             int(self.window.height * 0.9),
         )
         mouse.scale = 0.1  # TODO: считать размер от размера окна
-        self.sprites_to_draw.append(mouse)
+        self.sprites.append(mouse)
         self.mice.append(mouse)

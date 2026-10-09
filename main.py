@@ -6,6 +6,7 @@ import arcade
 
 import config
 import utils
+from core import SoundManager
 from views import GameView, LoadView, MenuView
 
 
@@ -24,12 +25,12 @@ class App(arcade.Window):
             draw_rate=1 / config.FPS,
         )
 
-        self.textures = {}
-        self.sounds = {}
+        self.sound_manager = SoundManager()
+
+        self.textures: dict[arcade.Texture] = {}
 
         self.loader = self.load_assets()
 
-        # TODO: забрать классовый атрибут name от представлений
         self.views = {
             "load": LoadView(),
         }
@@ -48,20 +49,19 @@ class App(arcade.Window):
     def load_assets(self) -> Generator[int]:
         """Загружает ассеты: текстуры и звуки."""
         percentage = 0
-        img_extentions = ("png", "jpg", "jpeg")
-        sound_extentions = ("mp3", "wav", "ogg")
 
-        textures_names = utils.get_filenames(config.IMG_DIR, img_extentions)
-        sounds_names = utils.get_filenames(config.SOUND_DIR, sound_extentions)
+        textures_names = utils.get_filenames(config.IMG_DIR, config.IMG_EXTENTIONS)
+        sounds_names = utils.get_filenames(config.SOUND_DIR, config.SOUND_EXTENTIONS)
 
         load_step = round(100 / (len(textures_names) + len(sounds_names)))
         file_names = textures_names + sounds_names
         for file_name in file_names:
             name, extention = file_name.split(".")[0], file_name.split(".")[-1]
-            if extention in img_extentions:
+            if extention in config.IMG_EXTENTIONS:
                 self.textures[name] = arcade.load_texture(config.IMG_DIR / file_name)
-            elif extention in sound_extentions:
-                self.sounds[name] = arcade.load_sound(config.SOUND_DIR / file_name)
+            elif extention in config.SOUND_EXTENTIONS:
+                sound = arcade.load_sound(config.SOUND_DIR / file_name)
+                self.sound_manager.add_sound(name, sound)
             percentage += load_step
             yield percentage
 
@@ -72,6 +72,12 @@ class App(arcade.Window):
             "game": GameView(),
         }
         self.views.update(views)
+
+    def on_setup(self) -> None:
+        """Все ассеты загружены!."""
+        self.make_views()
+        self.switch_view("menu")
+        self.sound_manager.play_music()
 
 
 if __name__ == "__main__":

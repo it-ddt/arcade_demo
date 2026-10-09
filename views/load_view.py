@@ -9,8 +9,10 @@ if TYPE_CHECKING:
 
 import arcade
 
+from .base_view import BaseView
 
-class LoadView(arcade.View):
+
+class LoadView(BaseView):
     """Представление загрузки."""
 
     window: App
@@ -34,18 +36,13 @@ class LoadView(arcade.View):
             anchor_x="center",
             anchor_y="center",
         )
+        self.text_objects.append(self.title_text)
+        self.text_objects.append(self.percentage_text)
 
-    def on_draw(self) -> None:
-        """Отрисовывает заголовок."""
-        self.clear()
-        self.title_text.draw()
-        self.percentage_text.draw()
-
-    def on_update(self, delta_time) -> None:
+    def on_update(self, _: float) -> None:
         """Обновление счетчика загрузки."""
         try:
             self.percentage_text.text = str(next(self.window.loader))
-        except StopIteration:  # Все текстуры загружены.
+        except StopIteration:  # Все ассеты загружены.
             self.percentage_text.text = "100"
-            self.window.make_views()
-            self.window.switch_view("menu")
+            self.window.on_setup()
