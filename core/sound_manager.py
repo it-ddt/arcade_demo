@@ -1,7 +1,6 @@
 """Модуль звука."""
 
 import arcade
-from arcade import Sound
 
 
 class SoundManager:
@@ -9,22 +8,21 @@ class SoundManager:
 
     def __init__(self) -> None:
         """Создает менеджер звуков."""
-        self._volume = 1
+        self._volume = 1.0
         self.is_mute = not bool(self._volume)
         self.sounds: dict[str, arcade.Sound] = {}
         self.players = []
 
-    def change_volume(self, step: float) -> None:
-        """Изменяет уровень громкости."""
-        new_volume = self._volume + step
+    @property
+    def volume(self) -> float:
+        """Уровень громкости."""
+        return self._volume
 
-        if new_volume >= 0 and new_volume <= 1:
-            self._volume = new_volume
-
-        if self._volume > 0:
-            self.is_mute = False
-        else:
-            self.is_mute = True
+    @volume.setter
+    def volume(self, value: float) -> None:
+        value = max(0.0, min(1.0, value))
+        self._volume = value
+        self._is_mute = not bool(self._volume)
 
     def add_sound(self, name: str, sound: arcade.Sound) -> None:
         """Добавляет звук."""
@@ -45,11 +43,10 @@ class SoundManager:
         """Проигрывает музыку циклично."""
         if self.is_mute:
             return
-
         sound = self.sounds.get("music")
         if not sound:
             return
-        player = sound.play(loop=True)
+        player = sound.play(loop=True, volume=self._volume)
         self.players.append(player)  # TODO: что делать с отыгравшими плеерами?
 
     def mute(self) -> None:

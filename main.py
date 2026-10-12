@@ -69,9 +69,13 @@ class App(arcade.Window):
         """Создает остальные представления."""
         views = {
             "menu": MenuView(),
-            "game": GameView(),
         }
         self.views.update(views)
+
+    def start_new_game(self) -> None:
+        """Начинает новую игру."""
+        self.views["game"] = GameView()
+        self.switch_view("game")
 
     def on_setup(self) -> None:
         """Все ассеты загружены!."""
