@@ -50,26 +50,26 @@ class GameView(BaseView):
             self.window.switch_view("menu")
 
         if symbol == arcade.key.D:
-            self.player.d_x = 1
+            self.player.turn_direction = 1
         if symbol == arcade.key.A:
-            self.player.d_x = -1
+            self.player.turn_direction = -1
 
         if symbol == arcade.key.W:
-            self.player.d_y = 1
+            self.player.move_direction = 1
         if symbol == arcade.key.S:
-            self.player.d_y = -1
+            self.player.move_direction = -1
 
     def on_key_release(self, symbol: int, _: int) -> None:
         """Система ввода: отпускание клавиш."""
         if symbol == arcade.key.D:
-            self.player.d_x = 0
+            self.player.turn_direction = 0
         if symbol == arcade.key.A:
-            self.player.d_x = 0
+            self.player.turn_direction = 0
 
         if symbol == arcade.key.W:
-            self.player.d_y = 0
+            self.player.move_direction = 0
         if symbol == arcade.key.S:
-            self.player.d_y = 0
+            self.player.move_direction = 0
 
     def on_update(self, delta_time: float) -> None:
         """Спавнит мышей, двигает игрока, удаляет пойманных мышей."""
@@ -77,7 +77,8 @@ class GameView(BaseView):
         if self.mice_spawn_timer >= self.mice_spawn_interval:
             self.spawn_mice()
             self.mice_spawn_timer = 0
-        self.player.move(delta_time)
+
+        self.sprites.update()
 
         mice_caught: list[arcade.Sprite] = arcade.check_for_collision_with_list(
             self.player,

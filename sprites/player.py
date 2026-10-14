@@ -1,5 +1,7 @@
 """Модуль игрока."""
 
+import math
+
 import arcade
 
 
@@ -15,11 +17,17 @@ class Player(arcade.Sprite):
         self.texture = texture
         self.center_x = x
         self.center_y = y
-        self.speed = 200
-        self.d_x = 0
-        self.d_y = 0
+        self.motion_speed = 200
+        self.rotation_speed = 100
+        self.turn_direction = 0
+        self.move_direction = 0
 
-    def move(self, delta_time: float) -> None:
-        """Изменяет обе координаты на произведение направления и скорости."""
-        self.center_x += self.d_x * self.speed * delta_time
-        self.center_y += self.d_y * self.speed * delta_time
+    def update(self, delta_time: float) -> None:
+        """Обновление.
+
+        Перемещение и поворот.
+        """
+        self.angle += self.turn_direction * self.rotation_speed * delta_time
+        angle_rad = math.radians(self.angle)
+        self.center_x += math.sin(angle_rad) * self.move_direction * self.motion_speed * delta_time
+        self.center_y += math.cos(angle_rad) * self.move_direction * self.motion_speed * delta_time

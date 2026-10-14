@@ -3,6 +3,7 @@
 from collections.abc import Generator
 
 import arcade
+import pyglet
 
 import config
 import utils
@@ -19,10 +20,19 @@ class App(arcade.Window):
         Создает и показывает представление геймплея;
         Запускает главный цикл движка.
         """
+        # убирает рваные края у текстов
+        pyglet.options.dpi_scaling = "real"
+
+        # выбирает второй экран
+        display = pyglet.display.get_display()
+        screens = display.get_screens()
+        screen = screens[0]
+
         super().__init__(
             fullscreen=True,
             update_rate=1 / config.FPS,
             draw_rate=1 / config.FPS,
+            screen=screen,
         )
 
         self.sound_manager = SoundManager()
