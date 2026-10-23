@@ -1,6 +1,11 @@
 """Модуль звука."""
 
+from typing import TYPE_CHECKING
+
 import arcade
+
+if TYPE_CHECKING:
+    from pyglet.media import Player
 
 
 class SoundManager:
@@ -11,7 +16,7 @@ class SoundManager:
         self._volume = 1.0
         self.is_mute = not bool(self._volume)
         self.sounds: dict[str, arcade.Sound] = {}
-        self.players = []
+        self.players: list[Player] = []
 
     @property
     def volume(self) -> float:
@@ -64,3 +69,7 @@ class SoundManager:
         else:
             self.play_music()
         return self.is_mute
+
+    def update(self) -> None:
+        """Удаляет только отыгравшие плееры (которые не играют)."""
+        self.players = [player for player in self.players if player.playing]

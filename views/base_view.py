@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from main import App
+    from sprites import BaseSprite
 
 import arcade
 
@@ -22,7 +23,8 @@ class BaseView(arcade.View, ABC):
     def __init__(self, bg_name: str = "") -> None:
         """Создает базовое представление."""
         super().__init__()
-        self.sprites = arcade.SpriteList()
+        self.bg_sprites = arcade.SpriteList()
+        self.sprites: arcade.SpriteList[BaseSprite] = arcade.SpriteList()
         self.text_objects: list[arcade.Text] = []
         if bg_name:
             self.make_bg(bg_name)
@@ -42,11 +44,16 @@ class BaseView(arcade.View, ABC):
             bg.texture.width,
             bg.texture.height,
         )
-        self.sprites.append(bg)
+        self.bg_sprites.append(bg)
 
     def on_draw(self) -> None:
         """Отрисовывает спрайты."""
         self.clear()
+        self.bg_sprites.draw()
         self.sprites.draw()
         for text_object in self.text_objects:
             text_object.draw()
+
+    def on_update(self, _: float) -> None:
+        """Обновляет менеджер звуков."""
+        self.window.sound_manager.update()

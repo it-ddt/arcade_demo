@@ -59,6 +59,7 @@ class MenuView(BaseView):
             texts.append("M - включить звук")
         else:
             texts.append("М - выключить звук")
+
         if self.window.views.get("game"):
             texts.append("ENTER - продолжить")
 

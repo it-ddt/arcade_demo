@@ -20,7 +20,7 @@ class App(arcade.Window):
         Создает и показывает представление геймплея;
         Запускает главный цикл движка.
         """
-        # убирает рваные края у текстов
+        # убирает рваные края у текстовых объектов
         pyglet.options.dpi_scaling = "real"
 
         # выбирает второй экран
@@ -60,16 +60,20 @@ class App(arcade.Window):
         """Загружает ассеты: текстуры и звуки."""
         percentage = 0
 
-        textures_names = utils.get_filenames(config.IMG_DIR, config.IMG_EXTENTIONS)
-        sounds_names = utils.get_filenames(config.SOUND_DIR, config.SOUND_EXTENTIONS)
+        textures_names = utils.get_filenames(config.IMG_DIR, config.IMG_EXTENSIONS)
+        sounds_names = utils.get_filenames(config.SOUND_DIR, config.SOUND_EXTENSIONS)
 
-        load_step = round(100 / (len(textures_names) + len(sounds_names)))
+        assets_count = (len(textures_names) + len(sounds_names))
+        if assets_count:
+            load_step = round(100 / assets_count)
+        else:
+            load_step = 100
         file_names = textures_names + sounds_names
         for file_name in file_names:
             name, extention = file_name.split(".")[0], file_name.split(".")[-1]
-            if extention in config.IMG_EXTENTIONS:
+            if extention in config.IMG_EXTENSIONS:
                 self.textures[name] = arcade.load_texture(config.IMG_DIR / file_name)
-            elif extention in config.SOUND_EXTENTIONS:
+            elif extention in config.SOUND_EXTENSIONS:
                 sound = arcade.load_sound(config.SOUND_DIR / file_name)
                 self.sound_manager.add_sound(name, sound)
             percentage += load_step

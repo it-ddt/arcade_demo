@@ -4,8 +4,8 @@ import pathlib
 
 FPS = 60  # сколько кадров в секунду
 
-IMG_EXTENTIONS = ("png", "jpg", "jpeg")
-SOUND_EXTENTIONS = ("mp3", "wav", "ogg")
+IMG_EXTENSIONS = ("png", "jpg", "jpeg")
+SOUND_EXTENSIONS = ("mp3", "wav", "ogg")
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent  # папка проекта
 ASSETS_DIR = BASE_DIR / "assets"
