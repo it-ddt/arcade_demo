@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from main import App
-    from sprites import BaseSprite
+    from sprites import BaseSprite, Button
 
 import arcade
 
@@ -25,6 +25,7 @@ class BaseView(arcade.View, ABC):
         super().__init__()
         self.bg_sprites = arcade.SpriteList()
         self.sprites: arcade.SpriteList[BaseSprite] = arcade.SpriteList()
+        self.buttons: arcade.SpriteList[Button] = arcade.SpriteList()
         self.text_objects: list[arcade.Text] = []
         if bg_name:
             self.make_bg(bg_name)
@@ -47,10 +48,12 @@ class BaseView(arcade.View, ABC):
         self.bg_sprites.append(bg)
 
     def on_draw(self) -> None:
-        """Отрисовывает спрайты."""
+        """Отрисовывает фоны, спрайты, кнопки и текстовые объекты."""
         self.clear()
         self.bg_sprites.draw()
         self.sprites.draw()
+        for button in self.buttons:
+            button.on_draw()
         for text_object in self.text_objects:
             text_object.draw()
 

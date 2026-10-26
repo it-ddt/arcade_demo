@@ -9,6 +9,8 @@ import arcade
 if TYPE_CHECKING:
     from main import App
 
+from sprites import Button
+
 from .base_view import BaseView
 
 
@@ -34,7 +36,7 @@ class MenuView(BaseView):
             font_size=50,  # TODO: рассчитать от размера окна
         )
         self.text_objects.append(self.title)
-        self.set_menu_text()
+        self.make_buttons()
 
     def on_key_press(self, symbol: int, _: int) -> None:
         """Включает представление игры по ENTER."""
@@ -47,22 +49,35 @@ class MenuView(BaseView):
             self.set_menu_text()
         elif symbol == arcade.key.N:
             self.window.start_new_game()
-            self.set_menu_text()
 
-    def set_menu_text(self) -> None:
-        """Меняет текст в пунктах меню."""
-        texts = [
-            "N - новая игра",
-            "ESC - выход",
-        ]
-        if self.window.sound_manager.is_mute:
-            texts.append("M - включить звук")
-        else:
-            texts.append("М - выключить звук")
+    def on_mouse_press(self, x: int, y: int, button: int, _: int) -> None:
+        """Клик на кнопки."""
+        if button != arcade.MOUSE_BUTTON_LEFT:
+            return
+        for button_sprite in self.buttons:
+            if button_sprite.collides_with_point((x, y)):
+                button_sprite.on_click()
 
-        if self.window.views.get("game"):
-            texts.append("ENTER - продолжить")
+    def make_buttons(self) -> None:
+        """Создает кнопки."""
+        buttons_actions = {
+            "новая игра": self.window.start_new_game,
+            "выключить звук": self.window.sound_manager.mute,
+            "выйти": arcade.exit,
+        }
+        button_height = 100  # TODO: забрать из кнопки
+        offset_y = button_height // 2
+        x = self.window.width // 2
 
-        texts_str = ", ".join(texts)
+        total_buttons_height = (
+            button_height * len(buttons_actions)
+            + (len(buttons_actions) - 1)
+            * offset_y
+        )
 
-        self.title.text = texts_str
+        y = self.window.height // 2 + total_buttons_height // 2 - button_height // 2
+
+        for text, action in buttons_actions.items():
+            button = Button(x, y, text=text, action=action)
+            self.buttons.append(button)
+            y -= button.height + offset_y

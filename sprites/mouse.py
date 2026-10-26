@@ -27,9 +27,7 @@ class Mouse(BaseSprite):
         d_y = self.center_y - player_y
         distance_to_player = math.hypot(d_x, d_y)
         if distance_to_player <= self.flee_distance:  # бегство
-            self.move_direction = 1
             angle_to_player = math.degrees(math.atan2(d_x, d_y))
-
             target_angle = angle_to_player + 180
 
             # определить, нужно ли повернуться
@@ -37,10 +35,13 @@ class Mouse(BaseSprite):
             angle_threshold = 5
             if abs(diff) < angle_threshold:
                 self.turn_direction = 0
+                self.move_direction = 1
             elif diff > 0:
                 self.turn_direction = 1
+                self.move_direction = 0
             else:
                 self.turn_direction = -1
+                self.move_direction = 0
         else:
             self.move_direction = 0
             self.turn_direction = 0
