@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from functools import partial
 from typing import TYPE_CHECKING
 
 import arcade
@@ -57,14 +58,27 @@ class MenuView(BaseView):
         for button_sprite in self.buttons:
             if button_sprite.collides_with_point((x, y)):
                 button_sprite.on_click()
+                self.make_buttons()
 
     def make_buttons(self) -> None:
         """Создает кнопки."""
-        buttons_actions = {
-            "новая игра": self.window.start_new_game,
-            "выключить звук": self.window.sound_manager.mute,
-            "выйти": arcade.exit,
-        }
+        self.buttons.clear()
+        buttons_actions = {"новая игра": self.window.start_new_game}
+
+        if self.window.sound_manager.volume > 0.0:
+            buttons_actions["выключить звук"] = partial(
+                setattr, self.window.sound_manager, "volume", 0.0,
+            )
+        else:
+            buttons_actions["включить звук"] = partial(
+                setattr, self.window.sound_manager, "volume", 1.0,
+            )
+
+        if self.window.views.get("game"):  # TODO: проверить стаус игры приложения
+            buttons_actions["продолжить игру"] = self.window.continue_game
+
+        buttons_actions["выйти"] = arcade.exit
+
         button_height = 100  # TODO: забрать из кнопки
         offset_y = button_height // 2
         x = self.window.width // 2
