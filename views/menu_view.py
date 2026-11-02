@@ -65,6 +65,9 @@ class MenuView(BaseView):
         self.buttons.clear()
         buttons_actions = {"новая игра": self.window.start_new_game}
 
+        if self.window.views.get("game"):
+            buttons_actions["продолжить игру"] = self.window.continue_game
+
         if self.window.sound_manager.volume > 0.0:
             buttons_actions["выключить звук"] = partial(
                 setattr, self.window.sound_manager, "volume", 0.0,
@@ -73,9 +76,6 @@ class MenuView(BaseView):
             buttons_actions["включить звук"] = partial(
                 setattr, self.window.sound_manager, "volume", 1.0,
             )
-
-        if self.window.views.get("game"):  # TODO: проверить стаус игры приложения
-            buttons_actions["продолжить игру"] = self.window.continue_game
 
         buttons_actions["выйти"] = arcade.exit
 

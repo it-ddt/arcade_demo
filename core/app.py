@@ -9,7 +9,6 @@ import config
 import utils
 from views import GameView, LoadView, MenuView
 
-from .game import Game
 from .sound_manager import SoundManager
 
 
@@ -42,8 +41,6 @@ class App(arcade.Window):
         self.textures: dict[arcade.Texture] = {}
 
         self.loader = self.load_assets()
-
-        self.game = Game()
 
         self.views = {
             "load": LoadView(),
@@ -92,11 +89,12 @@ class App(arcade.Window):
 
     def start_new_game(self) -> None:
         """Начинает новую игру."""
-        self.game.start_new_game()
+        self.views["game"] = GameView()
         self.switch_view("game")
 
     def continue_game(self) -> None:
         """Продолжает игру."""
+        self.switch_view("game")
 
     def on_setup(self) -> None:
         """Все ассеты загружены!."""
