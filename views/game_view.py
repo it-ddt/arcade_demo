@@ -7,6 +7,7 @@ import arcade
 from sprites import BaseSprite, Mouse, Player
 
 from .base_view import BaseView
+import config
 
 
 class GameView(BaseView):
@@ -39,14 +40,30 @@ class GameView(BaseView):
             self.window.width // 2,
             int(self.window.height * 0.9),
             font_size=100,  # TODO: рассчитать от размера окна
+            font_name=config.FONT_SCORE,
             anchor_x="center",
             anchor_y="center",
         )
         self.text_objects.append(self.score)
 
+    def setup(self) -> None:
+        """Возвращает игру в исходное состояние."""
+        self.sprites.clear()
+        self.mice.clear()
+
+        self.player.center_x = self.window.width // 2
+        self.player.center_y = self.window.height // 2
+        self.player.angle = 0
+        self.sprites.append(self.player)
+
+        self.mice_caught_counter = 0
+        self.score.text = str(self.mice_caught_counter)
+        self.mice_spawn_timer = self.mice_spawn_interval
+
     def on_key_press(self, symbol: int, _: int) -> None:
         """Система ввода: нажатие клавиш."""
         if symbol == arcade.key.ESCAPE:
+            self.window.game_state = "inactive"
             self.window.switch_view("menu")
 
         if symbol == arcade.key.D:

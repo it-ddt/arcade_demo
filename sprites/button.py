@@ -4,6 +4,8 @@ from collections.abc import Callable
 
 import arcade
 
+import config
+
 
 class Button(arcade.SpriteSolidColor):
     """Кнопка."""
@@ -12,17 +14,30 @@ class Button(arcade.SpriteSolidColor):
             self,
             x: int,
             y: int,
-            width: int = 600,
             height: int = 100,
             color: arcade.color.Color = arcade.color.BABY_BLUE,
             text: str = "кнопка",
             action: Callable | None = None,
     ) -> None:
-        """Создает кнопку с центром в x y."""
-        super().__init__(width, height, x, y, color)
+        """Создает кнопку.
+
+        x y - центр
+        Ширина = текстовй контент + горизонтальный отступ
+        """
         self.action = action
         self.text = text
-        self.label = arcade.Text(self.text, x, y, anchor_x="center", anchor_y="center", font_size=50)
+        self.label = arcade.Text(
+            self.text,
+            x,
+            y,
+            anchor_x="center",
+            anchor_y="center",
+            font_size=50,
+            font_name=config.FONT_BUTTON,
+        )
+        padding_x = 100
+        super().__init__(self.label.content_width + padding_x, height, x, y, color)
+
 
     def on_click(self) -> None:
         """Вызов действия по ЛКМ."""

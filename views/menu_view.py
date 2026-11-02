@@ -10,6 +10,7 @@ import arcade
 if TYPE_CHECKING:
     from main import App
 
+import config
 from sprites import Button
 
 from .base_view import BaseView
@@ -29,12 +30,13 @@ class MenuView(BaseView):
         super().__init__("menu_bg")
 
         self.title = arcade.Text(
-            "",
+            config.TITLE,
             self.window.width // 2,
-            self.window.height // 2,
+            self.window.height * 0.7,
             anchor_x="center",
             anchor_y="center",
             font_size=50,  # TODO: рассчитать от размера окна
+            font_name=config.FONT_TITLE,
         )
         self.text_objects.append(self.title)
         self.make_buttons()
@@ -65,7 +67,7 @@ class MenuView(BaseView):
         self.buttons.clear()
         buttons_actions = {"новая игра": self.window.start_new_game}
 
-        if self.window.views.get("game"):
+        if self.window.game_state == "active":
             buttons_actions["продолжить игру"] = self.window.continue_game
 
         if self.window.sound_manager.volume > 0.0:
