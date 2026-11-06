@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from main import App
 
 import config
-from sprites import Button
+from sprites import Button, TextOutlined
 
 from .base_view import BaseView
 
@@ -29,7 +29,7 @@ class MenuView(BaseView):
         """
         super().__init__("menu_bg")
 
-        self.title = arcade.Text(
+        self.title = TextOutlined(
             config.TITLE,
             self.window.width // 2,
             self.window.height * 0.7,
@@ -81,19 +81,22 @@ class MenuView(BaseView):
 
         buttons_actions["выйти"] = arcade.exit
 
-        button_height = 100  # TODO: забрать из кнопки
-        offset_y = button_height // 2
+
+        # создать все кнопки
         x = self.window.width // 2
-
-        total_buttons_height = (
-            button_height * len(buttons_actions)
-            + (len(buttons_actions) - 1)
-            * offset_y
-        )
-
-        y = self.window.height // 2 + total_buttons_height // 2 - button_height // 2
-
+        y = 0
         for text, action in buttons_actions.items():
             button = Button(x, y, text=text, action=action)
             self.buttons.append(button)
+
+        total_buttons_height = 0
+        offset_y = 50  # вертикальное расстояние между кнопками
+        for button in self.buttons:
+            total_buttons_height += button.height
+        total_buttons_height += offset_y * (len(self.buttons) - 1)
+
+        y = self.window.height // 2 + total_buttons_height // 2 - self.buttons[0].height // 2
+        for button in self.buttons:
+            button.center_y = y
+            button.label.y = y
             y -= button.height + offset_y

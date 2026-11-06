@@ -56,6 +56,13 @@ class BaseView(arcade.View, ABC):
             button.on_draw()
         for text_object in self.text_objects:
             text_object.draw()
+        arcade.draw_line(
+            0,
+            self.window.height // 2,
+            self.window.width,
+            self.window.height // 2,
+            arcade.color.RED,
+        )  # TODO: del on prod
 
     def on_update(self, _: float) -> None:
         """Обновляет менеджер звуков."""

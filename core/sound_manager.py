@@ -13,7 +13,7 @@ class SoundManager:
 
     def __init__(self) -> None:
         """Создает менеджер звуков."""
-        self._volume = 1.0
+        self._volume = 0.0  # 1.0 on prod
         self._is_mute = not bool(self._volume)
         self.sounds: dict[str, arcade.Sound] = {}
         self.players: list[Player] = []

@@ -14,7 +14,6 @@ class Button(arcade.SpriteSolidColor):
             self,
             x: int,
             y: int,
-            height: int = 100,
             color: arcade.color.Color = arcade.color.BABY_BLUE,
             text: str = "кнопка",
             action: Callable | None = None,
@@ -23,6 +22,7 @@ class Button(arcade.SpriteSolidColor):
 
         x y - центр
         Ширина = текстовй контент + горизонтальный отступ
+        Высота = текстовй контент + вертикальный отступ
         """
         self.action = action
         self.text = text
@@ -35,9 +35,11 @@ class Button(arcade.SpriteSolidColor):
             font_size=50,
             font_name=config.FONT_BUTTON,
         )
-        padding_x = 100
-        super().__init__(self.label.content_width + padding_x, height, x, y, color)
-
+        padding_x = 50
+        padding_y = 25
+        width = self.label.content_width + padding_x * 2
+        height = self.label.content_height + padding_y * 2
+        super().__init__(width, height, x, y, color)
 
     def on_click(self) -> None:
         """Вызов действия по ЛКМ."""
