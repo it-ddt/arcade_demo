@@ -63,7 +63,14 @@ class MenuView(BaseView):
                 self.make_buttons()
 
     def make_buttons(self) -> None:
-        """Создает кнопки."""
+        """Создает кнопки.
+
+        Очищает кнопки,
+        Создает действия для кнопок,
+        Создает все кнопки в одинаковых координатах,
+        Рассчитывает полную высоту блока кнопок,
+        Ставит каждую кнопку в правильное место.
+        """
         self.buttons.clear()
         buttons_actions = {"новая игра": self.window.start_new_game}
 
@@ -89,14 +96,15 @@ class MenuView(BaseView):
             button = Button(x, y, text=text, action=action)
             self.buttons.append(button)
 
-        total_buttons_height = 0
         offset_y = 50  # вертикальное расстояние между кнопками
-        for button in self.buttons:
-            total_buttons_height += button.height
-        total_buttons_height += offset_y * (len(self.buttons) - 1)
+        heights = [button.height for button in self.buttons]
+        total_buttons_height = sum(heights) + offset_y * (len(self.buttons) - 1)
 
-        y = self.window.height // 2 + total_buttons_height // 2 - self.buttons[0].height // 2
+        y = (
+            self.window.height // 2
+            + total_buttons_height // 2
+            - self.buttons[0].height // 2
+        )
         for button in self.buttons:
             button.center_y = y
-            button.label.y = y
             y -= button.height + offset_y

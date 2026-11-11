@@ -15,7 +15,7 @@ class TextOutlined(arcade.Text):
             y: int,
             color: arcade.types.Color = arcade.color.WHITE,
             color_outline: arcade.types.Color = arcade.color.BLACK,
-            thickness: int = 2,  # TODO: считать от font_size?
+            thickness: int = 2,
             anchor_x: str = "center",
             anchor_y: str = "center",
             font_size: int = 12,
@@ -45,19 +45,17 @@ class TextOutlined(arcade.Text):
         )
 
     def draw(self) -> None:
-        """Сначала рисует контур с отступами в 4 стороны, потом основной текст."""
-        self.outline.x = self.x + self.thickness
-        self.outline.draw()
-        self.outline.x = self.x - self.thickness
-        self.outline.draw()
-        self.outline.x = self.x
+        """Сначала рисует контуры с отступами в 8 сторон, потом основной текст."""
+        coords = [
+            (self.x + x * self.thickness, self.y + y * self.thickness)
+            for x in range(-1, 2)
+            for y in range(-1, 2)
+            if x != 0 and y != 0
+        ]
 
-        self.outline.y = self.y + self.thickness
-        self.outline.draw()
-        self.outline.y = self.y - self.thickness
-        self.outline.draw()
-        self.outline.y = self.y
-
-        # TODO: подвигать по 4 диагоналям
+        for x, y in coords:
+            self.outline.x = x
+            self.outline.y = y
+            self.outline.draw()
 
         super().draw()

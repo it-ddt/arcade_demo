@@ -48,4 +48,5 @@ class Button(arcade.SpriteSolidColor):
     def on_draw(self) -> None:
         """Рисует прямоугольник (спрайт) и текст."""
         arcade.draw_sprite(self)
+        self.label.y = self.center_y
         self.label.draw()
