@@ -54,3 +54,7 @@ class SoundManager:
     def update(self) -> None:
         """Удаляет только отыгравшие плееры (которые не играют)."""
         self.players = [player for player in self.players if player.playing]
+
+    def load_sounds(self, sounds: dict[str, arcade.Sound]) -> None:
+        """Загружает все звуки."""
+        self.sounds.update(sounds)

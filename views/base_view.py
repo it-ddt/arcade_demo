@@ -23,6 +23,8 @@ class BaseView(arcade.View, ABC):
     def __init__(self, bg_name: str = "") -> None:
         """Создает базовое представление."""
         super().__init__()
+        self.textures = self.window.assets_manager.textures
+        self.assets_manager = self.window.assets_manager
         self.bg_sprites = arcade.SpriteList()
         self.sprites: arcade.SpriteList[BaseSprite] = arcade.SpriteList()
         self.buttons: arcade.SpriteList[Button] = arcade.SpriteList()
@@ -34,7 +36,7 @@ class BaseView(arcade.View, ABC):
         """Создает фон."""
         bg_x = self.window.width // 2
         bg_y = self.window.height // 2
-        bg_texture = self.window.textures[bg_name]
+        bg_texture = self.textures[bg_name]
         bg = arcade.Sprite()
         bg.texture = bg_texture
         bg.center_x = bg_x

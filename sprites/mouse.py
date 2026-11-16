@@ -10,8 +10,9 @@ from .base_sprite import BaseSprite
 class Mouse(BaseSprite):
     """Мышь."""
 
-    def __init__(self, x: int, y: int, texture: arcade.Texture) -> None:
+    def __init__(self, x: int, y: int) -> None:
         """Создает мышь с центром в x y с текстурой texture."""
+        texture = self.assets_manager.textures["mouse"]
         super().__init__(x, y, texture)
         self.motion_speed = 200
         self.rotation_speed = 300

@@ -9,9 +9,9 @@ IMG_EXTENSIONS = ("png", "jpg", "jpeg")
 SOUND_EXTENSIONS = ("mp3", "wav", "ogg")
 FONT_EXTENSIONS = ("ttf", "otf")
 
-FONT_TITLE = "Press Start 2P"
-FONT_BUTTON = "Press Start 2P"
-FONT_SCORE = "Press Start 2P"
+FONT_TITLE = "PressStart2P-Regular"
+FONT_BUTTON = "PressStart2P-Regular"
+FONT_SCORE = "PressStart2P-Regular"
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent  # папка проекта
 ASSETS_DIR = BASE_DIR / "assets"

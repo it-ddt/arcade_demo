@@ -15,6 +15,8 @@ from sprites import Button, TextOutlined
 
 from .base_view import BaseView
 
+import utils
+
 
 class MenuView(BaseView):
     """Меню."""
@@ -35,8 +37,8 @@ class MenuView(BaseView):
             self.window.height * 0.7,
             anchor_x="center",
             anchor_y="center",
-            font_size=50,  # TODO: рассчитать от размера окна
-            font_name=config.FONT_TITLE,
+            font_size=utils.get_font_size(config.TITLE, self.window.width),  # TODO: рассчитать от размера окна
+            font_name=self.assets_manager.get_font(config.FONT_TITLE),
         )
         self.text_objects.append(self.title)
         self.make_buttons()

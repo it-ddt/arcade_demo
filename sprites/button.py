@@ -6,8 +6,10 @@ import arcade
 
 import config
 
+from . import BaseSprite
 
-class Button(arcade.SpriteSolidColor):
+
+class Button(arcade.SpriteSolidColor, BaseSprite):
     """Кнопка."""
 
     def __init__(
@@ -33,7 +35,7 @@ class Button(arcade.SpriteSolidColor):
             anchor_x="center",
             anchor_y="center",
             font_size=50,
-            font_name=config.FONT_BUTTON,
+            font_name=self.assets_manager.get_font(config.FONT_BUTTON),
         )
         padding_x = 50
         padding_y = 25

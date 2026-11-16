@@ -27,7 +27,6 @@ class GameView(BaseView):
         self.player = Player(
             self.window.width // 2,
             self.window.height // 2,
-            self.window.textures["player"],
         )
         self.sprites.append(self.player)
 
@@ -116,7 +115,6 @@ class GameView(BaseView):
         Создает спрайт с текстурой в случайных координатах
         (отступ 10% от каждого края).
         """
-        texture = self.window.textures["mouse"]
         x = random.randint(
             int(self.window.width * 0.1),
             int(self.window.width * 0.9),
@@ -125,7 +123,7 @@ class GameView(BaseView):
             int(self.window.height * 0.1),
             int(self.window.height * 0.9),
         )
-        mouse = Mouse(x, y, texture)
+        mouse = Mouse(x, y)
         mouse.scale = 0.1  # TODO: считать размер от размера окна
         self.sprites.append(mouse)
         self.mice.append(mouse)

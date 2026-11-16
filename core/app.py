@@ -1,14 +1,12 @@
 """Модуль приложения."""
 
-from collections.abc import Generator
-
 import arcade
 import pyglet
 
 import config
-import utils
 from views import GameView, LoadView, MenuView
 
+from .assets_manger import AssetsManager
 from .sound_manager import SoundManager
 
 
@@ -36,15 +34,11 @@ class App(arcade.Window):
             screen=screen,
         )
 
+        self.assets_manager = AssetsManager()
         self.sound_manager = SoundManager()
 
-        self.textures: dict[arcade.Texture] = {}
-
-        self.loader = self.load_assets()
-
-        self.views = {
-            "load": LoadView(),
-        }
+        self.loader = self.assets_manager.load_assets()
+        self.views = {"load": LoadView()}
         self.switch_view("load")
 
         self.game_state = "inactive"
@@ -58,32 +52,6 @@ class App(arcade.Window):
             error_message = f"Представление {view_name} не найдено."
             raise RuntimeError(error_message)
         self.show_view(view)
-
-    def load_assets(self) -> Generator[int]:
-        """Загружает ассеты: текстуры и звуки."""
-        percentage = 0
-
-        textures_names = utils.get_filenames(config.IMG_DIR, config.IMG_EXTENSIONS)
-        sounds_names = utils.get_filenames(config.SOUND_DIR, config.SOUND_EXTENSIONS)
-        fonts_names = utils.get_filenames(config.FONT_DIR, config.FONT_EXTENSIONS)
-
-        assets_count = (len(textures_names) + len(sounds_names) + len(fonts_names))
-        if assets_count:
-            load_step = round(100 / assets_count)
-        else:
-            load_step = 100
-        file_names = textures_names + sounds_names + fonts_names
-        for file_name in file_names:
-            name, extention = file_name.split(".")[0], file_name.split(".")[-1]
-            if extention in config.IMG_EXTENSIONS:
-                self.textures[name] = arcade.load_texture(config.IMG_DIR / file_name)
-            elif extention in config.SOUND_EXTENSIONS:
-                sound = arcade.load_sound(config.SOUND_DIR / file_name)
-                self.sound_manager.add_sound(name, sound)
-            elif extention in config.FONT_EXTENSIONS:
-                arcade.load_font(config.FONT_DIR / file_name)
-            percentage += load_step
-            yield percentage
 
     def make_views(self) -> None:
         """Создает остальные представления."""
@@ -106,7 +74,8 @@ class App(arcade.Window):
 
     def on_setup(self) -> None:
         """Все ассеты загружены!."""
+        all_sounds = self.assets_manager.sounds
+        self.sound_manager.load_sounds(all_sounds)
         self.make_views()
         self.switch_view("menu")
         self.sound_manager.play_music()
-

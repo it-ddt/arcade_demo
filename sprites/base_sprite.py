@@ -2,18 +2,22 @@
 
 import math
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
 import arcade
+
+if TYPE_CHECKING:
+    from core import AssetsManager
 
 
 class BaseSprite(arcade.Sprite, ABC):
     """Базовый спрайт."""
 
     @abstractmethod
-    def __init__(self, x: int, y: int, texture: arcade.Texture) -> None:
+    def __init__(self, x: int, y: int, assets_manager) -> None:
         """Создает базовый спрайт с центром в x y и текстурой texture."""
         super().__init__()
-        self.texture = texture
+        self.assets_manager = assets_manager
         self.center_x = x
         self.center_y = y
         self.motion_speed = 200
