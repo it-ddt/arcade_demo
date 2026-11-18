@@ -46,10 +46,3 @@ class AssetsManager:
                 self.fonts[name] = font_family
             percentage += load_step
             yield percentage
-
-    def get_font(self, file_name: str) -> str:
-        """Возвращает имя шрифта, если он есть в списке шрифтов."""
-        if file_name in self.fonts:
-            return self.fonts[file_name]
-        error_message = f"Шрифта {file_name} нет в папке {config.FONT_DIR}"
-        raise RuntimeError(error_message)

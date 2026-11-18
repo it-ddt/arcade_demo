@@ -4,10 +4,10 @@ import random
 
 import arcade
 
-from sprites import BaseSprite, Mouse, Player
+import config
+from sprites import BaseSprite, Mouse, Player, TextOutlined
 
 from .base_view import BaseView
-import config
 
 
 class GameView(BaseView):
@@ -27,6 +27,7 @@ class GameView(BaseView):
         self.player = Player(
             self.window.width // 2,
             self.window.height // 2,
+            self.textures["player"],
         )
         self.sprites.append(self.player)
 
@@ -34,14 +35,12 @@ class GameView(BaseView):
         self.mice_spawn_timer = self.mice_spawn_interval
         self.mice_caught_counter = 0
 
-        self.score = arcade.Text(
+        self.score = TextOutlined(
             str(self.mice_caught_counter),
             self.window.width // 2,
             int(self.window.height * 0.9),
             font_size=100,  # TODO: рассчитать от размера окна
-            font_name=config.FONT_SCORE,
-            anchor_x="center",
-            anchor_y="center",
+            font_name=self.fonts[config.FONT_SCORE],
         )
         self.text_objects.append(self.score)
 
@@ -123,7 +122,8 @@ class GameView(BaseView):
             int(self.window.height * 0.1),
             int(self.window.height * 0.9),
         )
-        mouse = Mouse(x, y)
+        texture = self.textures["mouse"]
+        mouse = Mouse(x, y, texture)
         mouse.scale = 0.1  # TODO: считать размер от размера окна
         self.sprites.append(mouse)
         self.mice.append(mouse)

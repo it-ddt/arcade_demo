@@ -8,12 +8,11 @@ from .base_sprite import BaseSprite
 class Player(BaseSprite):
     """Игрок."""
 
-    def __init__(self, x: int, y: int) -> None:
+    def __init__(self, x: int, y: int, texture: arcade.Texture) -> None:
         """Конструктор класса.
 
         Задает текстуру, координаты, скорость и направления движения.
         """
-        texture = self.assets_manager.textures["player"]
         super().__init__(x, y, texture)
         self.motion_speed = 200
         self.rotation_speed = 100

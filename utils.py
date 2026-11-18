@@ -4,6 +4,7 @@ import pathlib
 
 import arcade
 
+
 def get_scale(
         width_required: float,
         height_required: float,
@@ -36,6 +37,7 @@ def get_font_size(
 ) -> int:
     """Подбирает font_size так, чтобы текст примерно влез в target_width."""
     # Берём один пробный размер и масштабируем
+    min_font_size = 8
     probe_size = 20
     probe = arcade.Text(text, 0, 0, font_size=probe_size, font_name=font_name)
 
@@ -44,4 +46,4 @@ def get_font_size(
 
     # Масштаб
     scale = target_width / probe.content_width
-    return max(8, int(probe_size * scale))
+    return max(min_font_size, int(probe_size * scale))

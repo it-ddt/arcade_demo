@@ -4,12 +4,8 @@ from collections.abc import Callable
 
 import arcade
 
-import config
 
-from . import BaseSprite
-
-
-class Button(arcade.SpriteSolidColor, BaseSprite):
+class Button(arcade.SpriteSolidColor):
     """Кнопка."""
 
     def __init__(
@@ -18,6 +14,7 @@ class Button(arcade.SpriteSolidColor, BaseSprite):
             y: int,
             color: arcade.color.Color = arcade.color.BABY_BLUE,
             text: str = "кнопка",
+            font_name: str = "calibri",
             action: Callable | None = None,
     ) -> None:
         """Создает кнопку.
@@ -35,7 +32,7 @@ class Button(arcade.SpriteSolidColor, BaseSprite):
             anchor_x="center",
             anchor_y="center",
             font_size=50,
-            font_name=self.assets_manager.get_font(config.FONT_BUTTON),
+            font_name=font_name,
         )
         padding_x = 50
         padding_y = 25

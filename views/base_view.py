@@ -24,7 +24,7 @@ class BaseView(arcade.View, ABC):
         """Создает базовое представление."""
         super().__init__()
         self.textures = self.window.assets_manager.textures
-        self.assets_manager = self.window.assets_manager
+        self.fonts = self.window.assets_manager.fonts
         self.bg_sprites = arcade.SpriteList()
         self.sprites: arcade.SpriteList[BaseSprite] = arcade.SpriteList()
         self.buttons: arcade.SpriteList[Button] = arcade.SpriteList()

@@ -48,7 +48,7 @@ class TextOutlined(arcade.Text):
             for x in range(-1, 2)
             for y in range(-1, 2)
             if x != 0 and y != 0
-        ]
+        ]  # TODO: пересчитать при изменении координат основного текста
 
     def draw(self) -> None:
         """Сначала рисует контуры с отступами в 8 сторон, потом основной текст."""
@@ -58,3 +58,14 @@ class TextOutlined(arcade.Text):
             self.outline.draw()
 
         super().draw()
+
+    @property
+    def text(self) -> str:
+        """Геттер основного текста."""
+        return super().text
+
+    @text.setter
+    def text(self, value: str) -> None:
+        """Сеттер основного текста и текста контура."""
+        self._label.text = value
+        self.outline.text = value

@@ -11,11 +11,10 @@ if TYPE_CHECKING:
     from main import App
 
 import config
+import utils
 from sprites import Button, TextOutlined
 
 from .base_view import BaseView
-
-import utils
 
 
 class MenuView(BaseView):
@@ -38,22 +37,15 @@ class MenuView(BaseView):
             anchor_x="center",
             anchor_y="center",
             font_size=utils.get_font_size(config.TITLE, self.window.width),  # TODO: рассчитать от размера окна
-            font_name=self.assets_manager.get_font(config.FONT_TITLE),
+            font_name=self.fonts[config.FONT_TITLE],
         )
         self.text_objects.append(self.title)
         self.make_buttons()
 
     def on_key_press(self, symbol: int, _: int) -> None:
-        """Включает представление игры по ENTER."""
-        if symbol == arcade.key.ENTER and self.window.views.get("game"):
-            self.window.switch_view("game")
-        elif symbol == arcade.key.ESCAPE:
-            arcade.exit()
-        elif symbol == arcade.key.M:
-            self.window.sound_manager.toggle_mute()
-            self.set_menu_text()
-        elif symbol == arcade.key.N:
-            self.window.start_new_game()
+        """Тагл меню по ESC."""
+        if symbol == arcade.key.ESCAPE:
+            pass  # TODO: реализовать закрытие меню по ESC
 
     def on_mouse_press(self, x: int, y: int, button: int, _: int) -> None:
         """Клик на кнопки."""
@@ -90,12 +82,17 @@ class MenuView(BaseView):
 
         buttons_actions["выйти"] = arcade.exit
 
-
         # создать все кнопки
         x = self.window.width // 2
         y = 0
         for text, action in buttons_actions.items():
-            button = Button(x, y, text=text, action=action)
+            button = Button(
+                x,
+                y,
+                text=text,
+                action=action,
+                font_name=self.fonts[config.FONT_BUTTON],
+            )
             self.buttons.append(button)
 
         offset_y = 50  # вертикальное расстояние между кнопками
