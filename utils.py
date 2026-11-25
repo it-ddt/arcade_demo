@@ -29,21 +29,3 @@ def get_filenames(path: pathlib.Path, extentions: tuple[str]) -> list[str]:
         if file.is_file()
         and file.suffix.lower()[1:] in extentions
     ]
-
-def get_font_size(
-    text: str,
-    target_width: float,
-    font_name: str = "Press Start 2P",
-) -> int:
-    """Подбирает font_size так, чтобы текст примерно влез в target_width."""
-    # Берём один пробный размер и масштабируем
-    min_font_size = 8
-    probe_size = 20
-    probe = arcade.Text(text, 0, 0, font_size=probe_size, font_name=font_name)
-
-    if probe.content_width == 0:
-        return probe_size
-
-    # Масштаб
-    scale = target_width / probe.content_width
-    return max(min_font_size, int(probe_size * scale))

@@ -43,16 +43,16 @@ class TextOutlined(arcade.Text):
             anchor_y=anchor_y,
             font_name=font_name,
         )
-        self.outline_coords = [
+
+    def draw(self) -> None:
+        """Сначала рисует контуры с отступами в 8 сторон, потом основной текст."""
+        outline_coords = [
             (self.x + x * self.thickness, self.y + y * self.thickness)
             for x in range(-1, 2)
             for y in range(-1, 2)
             if x != 0 and y != 0
-        ]  # TODO: пересчитать при изменении координат основного текста
-
-    def draw(self) -> None:
-        """Сначала рисует контуры с отступами в 8 сторон, потом основной текст."""
-        for x, y in self.outline_coords:
+        ]
+        for x, y in outline_coords:
             self.outline.x = x
             self.outline.y = y
             self.outline.draw()

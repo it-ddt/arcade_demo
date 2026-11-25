@@ -29,8 +29,12 @@ class BaseView(arcade.View, ABC):
         self.sprites: arcade.SpriteList[BaseSprite] = arcade.SpriteList()
         self.buttons: arcade.SpriteList[Button] = arcade.SpriteList()
         self.text_objects: list[arcade.Text] = []
+        self.tags: list[arcade.Text] = []
+
         if bg_name:
             self.make_bg(bg_name)
+        self.camera_player = arcade.Camera2D()
+        self.camera_hud = arcade.Camera2D()
 
     def make_bg(self, bg_name: str) -> None:
         """Создает фон."""
@@ -52,19 +56,18 @@ class BaseView(arcade.View, ABC):
     def on_draw(self) -> None:
         """Отрисовывает фоны, спрайты, кнопки и текстовые объекты."""
         self.clear()
+
+        self.camera_player.use()
         self.bg_sprites.draw()
         self.sprites.draw()
-        for button in self.buttons:
-            button.on_draw()
+        for tag in self.tags:
+            tag.draw()
+
+        self.camera_hud.use()
         for text_object in self.text_objects:
             text_object.draw()
-        arcade.draw_line(
-            0,
-            self.window.height // 2,
-            self.window.width,
-            self.window.height // 2,
-            arcade.color.RED,
-        )  # TODO: del on prod
+        for button in self.buttons:
+            button.on_draw()
 
     def on_update(self, _: float) -> None:
         """Обновляет менеджер звуков."""

@@ -3,6 +3,7 @@
 import arcade
 
 from .base_sprite import BaseSprite
+from .text_outlined import TextOutlined
 
 
 class Player(BaseSprite):
@@ -18,7 +19,19 @@ class Player(BaseSprite):
         self.rotation_speed = 100
         self.turn_direction = 0
         self.move_direction = 0
+        self.hp = 100.0
+        self.tag_hp = TextOutlined(
+            str(self.hp),
+            x,
+            y,
+        )
 
     def __str__(self) -> str:
         """Строковое представление."""
-        return f"Мышь в {self.center_x} {self.center_y}"
+        return f"Игрок в {self.center_x} {self.center_y}"
+
+    def update(self, delta_time: float) -> None:
+        """Подтягивает тег к центру игрока."""
+        super().update(delta_time)
+        self.tag_hp.x = self.center_x
+        self.tag_hp.y = self.center_y

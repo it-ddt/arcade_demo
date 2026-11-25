@@ -41,7 +41,7 @@ class App(arcade.Window):
         self.views = {"load": LoadView()}
         self.switch_view("load")
 
-        self.game_state = "inactive"
+        self.is_continue_game_button_visible = False
 
         arcade.run()
 
@@ -64,12 +64,11 @@ class App(arcade.Window):
     def start_new_game(self) -> None:
         """Начинает новую игру."""
         self.views["game"].setup()
-        self.game_state = "active"
+        self.is_continue_game_button_visible = True
         self.switch_view("game")
 
     def continue_game(self) -> None:
         """Продолжает игру."""
-        self.game_state = "active"
         self.switch_view("game")
 
     def on_setup(self) -> None:

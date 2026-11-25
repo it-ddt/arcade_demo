@@ -33,10 +33,10 @@ class MenuView(BaseView):
         self.title = TextOutlined(
             config.TITLE,
             self.window.width // 2,
-            self.window.height * 0.7,
+            self.window.height * 0.85,
             anchor_x="center",
             anchor_y="center",
-            font_size=utils.get_font_size(config.TITLE, self.window.width),  # TODO: рассчитать от размера окна
+            font_size=50,  # TODO: рассчитать от размера окна
             font_name=self.fonts[config.FONT_TITLE],
         )
         self.text_objects.append(self.title)
@@ -68,7 +68,7 @@ class MenuView(BaseView):
         self.buttons.clear()
         buttons_actions = {"новая игра": self.window.start_new_game}
 
-        if self.window.game_state == "active":
+        if self.window.is_continue_game_button_visible:
             buttons_actions["продолжить игру"] = self.window.continue_game
 
         if self.window.sound_manager.volume > 0.0:

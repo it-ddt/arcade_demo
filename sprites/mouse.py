@@ -5,6 +5,7 @@ import math
 import arcade
 
 from .base_sprite import BaseSprite
+from .text_outlined import TextOutlined
 
 
 class Mouse(BaseSprite):
@@ -16,6 +17,12 @@ class Mouse(BaseSprite):
         self.motion_speed = 200
         self.rotation_speed = 300
         self.flee_distance = 200
+        self.hp = 100.0
+        self.tag_hp = TextOutlined(
+            str(self.hp),
+            x,
+            y,
+        )
 
     def __str__(self) -> str:
         """Строковое представление."""
@@ -45,3 +52,9 @@ class Mouse(BaseSprite):
         else:
             self.move_direction = 0
             self.turn_direction = 0
+
+    def update(self, delta_time: float) -> None:
+        """Подтягивает тег к центру мыши."""
+        super().update(delta_time)
+        self.tag_hp.x = self.center_x
+        self.tag_hp.y = self.center_y

@@ -30,6 +30,7 @@ class GameView(BaseView):
             self.textures["player"],
         )
         self.sprites.append(self.player)
+        self.tags.append(self.player.tag_hp)
 
         self.mice_spawn_interval = 1  # сек
         self.mice_spawn_timer = self.mice_spawn_interval
@@ -61,7 +62,6 @@ class GameView(BaseView):
     def on_key_press(self, symbol: int, _: int) -> None:
         """Система ввода: нажатие клавиш."""
         if symbol == arcade.key.ESCAPE:
-            self.window.game_state = "inactive"
             self.window.switch_view("menu")
 
         if symbol == arcade.key.D:
@@ -98,15 +98,22 @@ class GameView(BaseView):
         for sprite in self.sprites:
             sprite.stay_inside_bounds(self.window.width, self.window.height)
 
-        mice_caught: list[arcade.Sprite] = arcade.check_for_collision_with_list(
+        mice_caught: list[Mouse] = arcade.check_for_collision_with_list(
             self.player,
             self.mice,
         )
         for mouse in mice_caught:
             self.window.sound_manager.play_sound("catch")
+            self.text_objects.remove(mouse.tag_hp)
             mouse.remove_from_sprite_lists()
             self.mice_caught_counter += 1
             self.score.text = str(self.mice_caught_counter)
+
+        self.camera_player.position = arcade.math.lerp_2d(
+            self.camera_player.position,
+            self.player.position,
+            0.1,
+        )
 
     def spawn_mouse(self) -> None:
         """Спавн мыши.
@@ -127,3 +134,4 @@ class GameView(BaseView):
         mouse.scale = 0.1  # TODO: считать размер от размера окна
         self.sprites.append(mouse)
         self.mice.append(mouse)
+        self.tags.append(mouse.tag_hp)
