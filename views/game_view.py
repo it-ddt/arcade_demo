@@ -5,7 +5,13 @@ import random
 import arcade
 
 import config
-from sprites import BaseSprite, Mouse, Player, TextOutlined
+from sprites import (
+    BaseSprite,
+    Mouse,
+    Obstacle,
+    Player,
+    TextOutlined,
+)
 
 from .base_view import BaseView
 
@@ -21,12 +27,16 @@ class GameView(BaseView):
         Подгоняет фон к размеру окна (не оставляет пустых областей).
         """
         super().__init__("game_bg")
+        self.world_width = self.window.width * config.WORLD_WIDTH
+        self.world_height = self.window.height * config.WORLD_HEIGHT
+
         self.sprites: arcade.SpriteList[BaseSprite] = arcade.SpriteList()
         self.mice: arcade.SpriteList[Mouse] = arcade.SpriteList()
+        self.obstacles: arcade.SpriteList[Obstacle] = arcade.SpriteList()
 
         self.player = Player(
-            self.window.width // 2,
-            self.window.height // 2,
+            0,
+            0,
             self.textures["player"],
         )
         self.sprites.append(self.player)
@@ -45,13 +55,63 @@ class GameView(BaseView):
         )
         self.text_objects.append(self.score)
 
+        self.make_world_bounds()
+
+    def make_world_bounds(self) -> None:
+        """Создает 4 стены вокруг мира."""
+        obstacle = Obstacle(
+            self.world_width / 2,
+            self.world_height,
+            self.world_width,
+            self.world_height * 0.1,
+        )  # верхняя
+        self.obstacles.append(obstacle)
+        obstacle = Obstacle(
+            self.world_width / 2,
+            0,
+            self.world_width,
+            self.world_height * 0.1,
+        )  # нижняя
+        self.obstacles.append(obstacle)
+        obstacle = Obstacle(
+            0,
+            self.world_height / 2,
+            self.world_height * 0.1,
+            self.world_height,
+        )  # левая
+        self.obstacles.append(obstacle)
+        obstacle = Obstacle(
+            self.world_width,
+            self.world_height / 2,
+            self.world_height * 0.1,
+            self.world_height,
+        )  # правая
+        self.obstacles.append(obstacle)
+
+    def on_draw(self) -> None:
+        """Сначала рисует все, а потом границы мира."""
+        self.clear()
+        self.camera_player.use()
+        self.bg_sprites.draw()
+        self.sprites.draw()
+        for tag in self.tags:
+            tag.draw()
+        self.obstacles.draw()
+
+        self.camera_hud.use()
+        for text_object in self.text_objects:
+            text_object.draw()
+        for button in self.buttons:
+            button.on_draw()
+
+
     def setup(self) -> None:
         """Возвращает игру в исходное состояние."""
         self.sprites.clear()
         self.mice.clear()
 
-        self.player.center_x = self.window.width // 2
-        self.player.center_y = self.window.height // 2
+        self.player.center_x = self.world_width / 2
+        self.player.center_y = self.world_height / 2
         self.player.angle = 0
         self.sprites.append(self.player)
 
@@ -95,8 +155,6 @@ class GameView(BaseView):
         for mouse in self.mice:
             mouse.move(self.player.center_x, self.player.center_y)
         self.sprites.update(delta_time)
-        for sprite in self.sprites:
-            sprite.stay_inside_bounds(self.window.width, self.window.height)
 
         mice_caught: list[Mouse] = arcade.check_for_collision_with_list(
             self.player,
@@ -104,16 +162,29 @@ class GameView(BaseView):
         )
         for mouse in mice_caught:
             self.window.sound_manager.play_sound("catch")
-            self.text_objects.remove(mouse.tag_hp)
+            self.tags.remove(mouse.tag_hp)
             mouse.remove_from_sprite_lists()
             self.mice_caught_counter += 1
             self.score.text = str(self.mice_caught_counter)
 
-        self.camera_player.position = arcade.math.lerp_2d(
-            self.camera_player.position,
-            self.player.position,
-            0.1,
-        )
+        self.update_camera()
+
+    def update_camera(self) -> None:
+        """"""
+
+        cam_y = self.player.center_y
+
+        min_x = self.window.width / 2
+        cam_x = self.player.center_x
+        max_x = self.world_width - self.window.width / 2
+
+        min_y = self.window.height / 2
+        cam_y = self.player.center_y
+        max_y = self.world_height - self.window.height / 2
+
+        cam_x = max(min_x, min(cam_x, max_x))
+        cam_y = max(min_y, min(cam_y, max_y))
+        self.camera_player.position = (cam_x, cam_y)
 
     def spawn_mouse(self) -> None:
         """Спавн мыши.

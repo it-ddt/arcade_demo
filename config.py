@@ -5,6 +5,9 @@ import pathlib
 TITLE = "Игра на Arcade 3.3.3"
 FPS = 60  # сколько кадров в секунду
 
+WORLD_WIDTH = 3
+WORLD_HEIGHT = 3
+
 IMG_EXTENSIONS = ("png", "jpg", "jpeg")
 SOUND_EXTENSIONS = ("mp3", "wav", "ogg")
 FONT_EXTENSIONS = ("ttf", "otf")

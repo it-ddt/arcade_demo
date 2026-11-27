@@ -15,7 +15,7 @@ class Player(BaseSprite):
         Задает текстуру, координаты, скорость и направления движения.
         """
         super().__init__(x, y, texture)
-        self.motion_speed = 200
+        self.motion_speed = 2000
         self.rotation_speed = 100
         self.turn_direction = 0
         self.move_direction = 0
@@ -35,3 +35,4 @@ class Player(BaseSprite):
         super().update(delta_time)
         self.tag_hp.x = self.center_x
         self.tag_hp.y = self.center_y
+        self.tag_hp.text = str(self.position)  # TODO: del on prod
